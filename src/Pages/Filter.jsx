@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -177,24 +177,54 @@ const pictureData = [
 ];
 
 export default function Filter() {
+    const [selectedCategory, setSelectedCategory] = useState("All")
+    const [filteredCategories, setFilteredCategories] = useState(pictureData)
     // 1. useState
 
     // 2. handle function
+    const handleCategory = (category) => {setSelectedCategory(category)}
 
     // 3. filter useEffect
+    useEffect(()=>{
+        if(selectedCategory === "All"){
+            console.log("All icecreams")
+            setFilteredCategories(pictureData)
+        } else {
+            console.log(selectedCategory)
+            const filteredData = pictureData.filter((item)=> selectedCategory === item.category && selectedyearlevl === item.yearlevel)
+            setFilteredCategories(filteredData)
+        }
+    }, [selectedCategory])
+
+    // const filteredCategories = 
+    //     selectedCategory === "All" 
+    //         ? pictureData
+    //         : pictureData.filter((item) => selectedCategory === item.category)
+
 
     return (
         <Container>
             <FilterContainer>
                 <h2>Filtering Exercise</h2>
                 <ButtonContainer>
-                    {/* 4. makes 5 buttons for all types, vanilla, chocolate, fruities and fancy */}
+                    {/* 4. makes 5 buttons for all types, vanilla, chocolate, fruit and rainbow */}
+                    <Button onClick={() => handleCategory("All")}  isActive={selectedCategory === "All"}>All Types</Button>
+                    <Button onClick={() => handleCategory("Vanilla")} isActive={selectedCategory === "Vanilla"}>Vanilla</Button>
+                    <Button onClick={() => handleCategory("Chocolate")} isActive={selectedCategory === "Chocolate"}>Chocolate</Button>
+                    <Button onClick={() => handleCategory("Fruit")} isActive={selectedCategory === "Fruit"}>Fruit</Button>
+                    <Button onClick={() => handleCategory("Rainbow")} isActive={selectedCategory === "Rainbow"}>Rainbow</Button>
                 </ButtonContainer>
             </FilterContainer>
 
 
             <PictureGallery key={pictureData.id}>
                 {/* 5. map over the data, returning elements that display the image, and name */}
+                {filteredCategories.map((items) => 
+                    <PictureItem key={items.id}>
+                        <img src={items.image} alt={items.name}/>
+                        <p>{items.name}</p>
+                    </PictureItem>
+                )}
             </PictureGallery>
         </Container >
     );
